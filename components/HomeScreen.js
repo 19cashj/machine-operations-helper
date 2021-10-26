@@ -17,13 +17,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#c3c3c3',
-        fontSize: 12
+        fontSize: 12,
+        alignContent: 'center',
+        justifyContent: 'center'
     },
     logo: {
         width: 199,
         height: 199,
         alignSelf: 'center',
-        marginTop: 84
     },
     title: {
         fontSize: 48,
