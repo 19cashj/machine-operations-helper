@@ -1,29 +1,69 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Button, Image, Text, TextInput } from "react-native";
+import { ScrollView } from 'react-native-gesture-handler';
 import { Context } from '../Context'
+/*function ConversionInput(props) {
+    return (
+        <View style={styles.inputWrapper}>
+            <Text style={styles.label}>{props.label}</Text>
+            <TextInput TextInput style={styles.input} keyboardType={'numeric'} value={props.state} onChangeText={(t) => {props.setState(parseInt(t) || 0)}}></TextInput>
+        </View>
+    )
+}
+
+function Conversion(props) {
+    return (
+        <View style={styles.container}>
+          <View style={styles.conversionContainer}>
+              <Text style={styles.conversionHeader}>{props.header}</Text>
+                <View style={styles.inputContainer}>
+                    <ConversionInput label={props.label1} state={props.state1}/>
+                    <ConversionInput state={props.state2}/>
+                </View>
+                <Text style={styles.result}>Result: {props.function()} inches</Text>
+            </View>
+        </View>
+                
+    )
+}*/
 
 export function ConversionScreen() {
     const [feet1, setFeet1] = useState(0);
     const [inches1, setInches1] = useState(0);
-    function calculate() {
-        return feet1 * 12 + inches1;
-    }
+    const [numerator1, setNumerator1] = useState(1);
+    const [denominator1, setDenominator1] = useState(1);
     return (
       <View style={styles.container}>
+          <ScrollView>
           <View style={styles.conversionContainer}>
-              <Text style={styles.conversionHeader}>esfsego</Text>
+              <Text style={styles.conversionHeader}>Feet to Inches</Text>
                 <View style={styles.inputContainer}>
                     <View style={styles.inputWrapper}>
                         <Text style={styles.label}>Ft:</Text>
-                        <TextInput TextInput style={styles.input} placeholder={'Feet'} value={feet1} onChangeText={(t) => setFeet1(t)}></TextInput>
+                        <TextInput TextInput style={styles.input} keyboardType={'numeric'} value={feet1} onChangeText={(t) => setFeet1(parseInt(t) || 0)}></TextInput>
                     </View>
                     <View style={styles.inputWrapper}>
                         <Text style={styles.label}>In:</Text>
-                        <TextInput TextInput style={styles.input} placeholder={'Inches'} value={inches1} onChangeText={(t) => setInches1(parseInt(t) || 0)}></TextInput>
+                        <TextInput TextInput style={styles.input} keyboardType={'numeric'} value={inches1} onChangeText={(t) => setInches1(parseInt(t) || 0)}></TextInput>
                     </View>
                 </View>
-                <Text style={styles.result}>Result: {calculate()} inches</Text>
+                <Text style={styles.result}>Result: {(feet1 * 12 + inches1)} inches</Text>
             </View>
+            <View style={styles.conversionContainer}>
+                <Text style={styles.conversionHeader}>Fraction to Decimal</Text>
+                <View style={styles.inputContainer}>
+                    <View style={styles.inputWrapper}>
+                        <Text style={styles.label}>Num:</Text>
+                        <TextInput TextInput style={styles.input} keyboardType={'numeric'} value={numerator1} onChangeText={(t) => setNumerator1(parseInt(t) || 0)}></TextInput>
+                    </View>
+                    <View style={styles.inputWrapper}>
+                        <Text style={styles.label}>Den:</Text>
+                        <TextInput TextInput style={styles.input} keyboardType={'numeric'} value={denominator1} onChangeText={(t) => setDenominator1(parseInt(t) || 0)}></TextInput>
+                    </View>
+                </View>
+                <Text style={styles.result}>Result: {(numerator1 / denominator1) || 0} inches</Text>
+            </View>
+            </ScrollView>
       </View>
     )
 }
@@ -49,11 +89,11 @@ const styles = StyleSheet.create({
         width: 100,
         marginTop: 20,
         borderRadius: 20,
-        marginLeft: 20
+        marginHorizontal: 10
     },
     input: {
         height: 40,
-        maxWidth: 80,
+        width: 80,
         paddingHorizontal: 20,
     },
     label: {
