@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Button, Image, Text, TextInput } from "react-native";
 import { ScrollView } from 'react-native-gesture-handler';
 import { Context } from '../Context'
+import { create, all } from 'mathjs'
+
+const config = { }
+const math = create(all, config)
 /*function ConversionInput(props) {
     return (
         <View style={styles.inputWrapper}>
@@ -32,6 +36,11 @@ export function ConversionScreen() {
     const [inches1, setInches1] = useState(0);
     const [numerator1, setNumerator1] = useState(1);
     const [denominator1, setDenominator1] = useState(1);
+    const [decimal1, setDecimal1] = useState(0);
+    function decimalToFraction() {
+        let result = math.fraction(`0.${decimal1}`)
+        return (`${result.n}/${result.d}`);
+    }
     return (
       <View style={styles.container}>
           <ScrollView>
@@ -62,6 +71,16 @@ export function ConversionScreen() {
                     </View>
                 </View>
                 <Text style={styles.result}>Result: {(numerator1 / denominator1) || 0} inches</Text>
+            </View>
+            <View style={styles.conversionContainer}>
+                <Text style={styles.conversionHeader}>Decimal to Fraction</Text>
+                <View style={styles.inputContainer}>
+                    <View style={styles.inputWrapper}>
+                        <Text style={styles.label}>0.</Text>
+                        <TextInput TextInput style={styles.input} keyboardType={'numeric'} value={decimal1} onChangeText={(t) => setDecimal1(parseInt(t) || 0)}></TextInput>
+                    </View>
+                </View>
+                <Text style={styles.result}>Result: {decimalToFraction() || 0} inches</Text>
             </View>
             </ScrollView>
       </View>
