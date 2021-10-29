@@ -6,30 +6,33 @@ import { create, all } from 'mathjs'
 
 const config = { }
 const math = create(all, config)
-/*function ConversionInput(props) {
+
+function ConversionInput(props) {
     return (
         <View style={styles.inputWrapper}>
             <Text style={styles.label}>{props.label}</Text>
-            <TextInput TextInput style={styles.input} keyboardType={'numeric'} value={props.state} onChangeText={(t) => {props.setState(parseInt(t) || 0)}}></TextInput>
+            <TextInput style={styles.input} keyboardType={'numeric'} value={props.state} onChangeText={(t) => {props.setState(parseInt(t) || 0)}}></TextInput>
         </View>
     )
 }
 
 function Conversion(props) {
     return (
-        <View style={styles.container}>
-          <View style={styles.conversionContainer}>
-              <Text style={styles.conversionHeader}>{props.header}</Text>
-                <View style={styles.inputContainer}>
-                    <ConversionInput label={props.label1} state={props.state1}/>
-                    <ConversionInput state={props.state2}/>
-                </View>
-                <Text style={styles.result}>Result: {props.function()} inches</Text>
+        <View style={styles.conversionContainer}>
+            <Text style={styles.conversionHeader}>{props.header}</Text>
+            <View style={styles.inputContainer}>
+                {props.conversionInputs.map(e => {
+                    return (
+                        <>
+                        <ConversionInput label={e.label} state={e.state} setState={e.setState} key={e.key} />
+                        </>
+                    )
+                })}
             </View>
-        </View>
-                
+            <Text style={styles.result}>Result: {props.function || 0} inches</Text>
+        </View> 
     )
-}*/
+}
 
 export function ConversionScreen() {
     const [feet1, setFeet1] = useState(0);
@@ -37,51 +40,18 @@ export function ConversionScreen() {
     const [numerator1, setNumerator1] = useState(1);
     const [denominator1, setDenominator1] = useState(1);
     const [decimal1, setDecimal1] = useState(0);
+
     function decimalToFraction() {
         let result = math.fraction(`0.${decimal1}`)
         return (`${result.n}/${result.d}`);
     }
+
     return (
       <View style={styles.container}>
           <ScrollView>
-          <View style={styles.conversionContainer}>
-              <Text style={styles.conversionHeader}>Feet to Inches</Text>
-                <View style={styles.inputContainer}>
-                    <View style={styles.inputWrapper}>
-                        <Text style={styles.label}>Ft:</Text>
-                        <TextInput TextInput style={styles.input} keyboardType={'numeric'} value={feet1} onChangeText={(t) => setFeet1(parseInt(t) || 0)}></TextInput>
-                    </View>
-                    <View style={styles.inputWrapper}>
-                        <Text style={styles.label}>In:</Text>
-                        <TextInput TextInput style={styles.input} keyboardType={'numeric'} value={inches1} onChangeText={(t) => setInches1(parseInt(t) || 0)}></TextInput>
-                    </View>
-                </View>
-                <Text style={styles.result}>Result: {(feet1 * 12 + inches1)} inches</Text>
-            </View>
-            <View style={styles.conversionContainer}>
-                <Text style={styles.conversionHeader}>Fraction to Decimal</Text>
-                <View style={styles.inputContainer}>
-                    <View style={styles.inputWrapper}>
-                        <Text style={styles.label}>Num:</Text>
-                        <TextInput TextInput style={styles.input} keyboardType={'numeric'} value={numerator1} onChangeText={(t) => setNumerator1(parseInt(t) || 0)}></TextInput>
-                    </View>
-                    <View style={styles.inputWrapper}>
-                        <Text style={styles.label}>Den:</Text>
-                        <TextInput TextInput style={styles.input} keyboardType={'numeric'} value={denominator1} onChangeText={(t) => setDenominator1(parseInt(t) || 0)}></TextInput>
-                    </View>
-                </View>
-                <Text style={styles.result}>Result: {(numerator1 / denominator1) || 0} inches</Text>
-            </View>
-            <View style={styles.conversionContainer}>
-                <Text style={styles.conversionHeader}>Decimal to Fraction</Text>
-                <View style={styles.inputContainer}>
-                    <View style={styles.inputWrapper}>
-                        <Text style={styles.label}>0.</Text>
-                        <TextInput TextInput style={styles.input} keyboardType={'numeric'} value={decimal1} onChangeText={(t) => setDecimal1(parseInt(t) || 0)}></TextInput>
-                    </View>
-                </View>
-                <Text style={styles.result}>Result: {decimalToFraction() || 0} inches</Text>
-            </View>
+            <Conversion header={"Feet to Inches"} conversionInputs={[{label: "Ft", state: feet1, setState: setFeet1, key: 1},{label: "In", state: inches1, setState: setInches1, key: 2}]} function={(feet1 * 12 + inches1)}/>
+            <Conversion header={"Fraction to Decimal"} conversionInputs={[{label: "Num", state: numerator1, setState: setNumerator1, key: 1},{label: "Den", state: denominator1, setState: setDenominator1, key: 2}]} function={(numerator1 / denominator1)}/>
+            <Conversion header={"Decimal to Fraction"} conversionInputs={[{label: "0.", state: decimal1, setState: setDecimal1, key: 1}]} function={decimalToFraction()}/>
             </ScrollView>
       </View>
     )
