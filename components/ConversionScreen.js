@@ -23,13 +23,11 @@ function Conversion(props) {
             <View style={styles.inputContainer}>
                 {props.conversionInputs.map(e => {
                     return (
-                        <>
                         <ConversionInput label={e.label} state={e.state} setState={e.setState} key={e.key} />
-                        </>
                     )
                 })}
             </View>
-            <Text style={styles.result}>Result: {props.function || 0} inches</Text>
+            <Text style={styles.result}>Result: {props.function || 0} {props.resultUnit}</Text>
         </View> 
     )
 }
@@ -37,6 +35,8 @@ function Conversion(props) {
 export function ConversionScreen() {
     const [feet1, setFeet1] = useState(0);
     const [inches1, setInches1] = useState(0);
+    const [inches2, setInches2] = useState(0);
+    const [milimeters1, setMilimeters1] = useState(0);
     const [numerator1, setNumerator1] = useState(1);
     const [denominator1, setDenominator1] = useState(1);
     const [decimal1, setDecimal1] = useState(0);
@@ -49,9 +49,11 @@ export function ConversionScreen() {
     return (
       <View style={styles.container}>
           <ScrollView>
-            <Conversion header={"Feet to Inches"} conversionInputs={[{label: "Ft", state: feet1, setState: setFeet1, key: 1},{label: "In", state: inches1, setState: setInches1, key: 2}]} function={(feet1 * 12 + inches1)}/>
-            <Conversion header={"Fraction to Decimal"} conversionInputs={[{label: "Num", state: numerator1, setState: setNumerator1, key: 1},{label: "Den", state: denominator1, setState: setDenominator1, key: 2}]} function={(numerator1 / denominator1)}/>
-            <Conversion header={"Decimal to Fraction"} conversionInputs={[{label: "0.", state: decimal1, setState: setDecimal1, key: 1}]} function={decimalToFraction()}/>
+            <Conversion header={"Feet to Inches"} conversionInputs={[{label: "Ft", state: feet1, setState: setFeet1, key: 1},{label: "In", state: inches1, setState: setInches1, key: 2}]} function={(feet1 * 12 + inches1)} resultUnit={'inches'}/>
+            <Conversion header={"Inches to Milimeters"} conversionInputs={[{label: "In", state: inches2, setState: setInches2, key: 1}]} function={(inches2 * 25.4)} resultUnit={'milimeters'}/>
+            <Conversion header={"Milimeters to Inches"} conversionInputs={[{label: "Mm", state: milimeters1, setState: setMilimeters1, key: 1}]} function={(milimeters1 / 25.4)} resultUnit={'inches'}/>
+            <Conversion header={"Fraction to Decimal"} conversionInputs={[{label: "Num", state: numerator1, setState: setNumerator1, key: 1},{label: "Den", state: denominator1, setState: setDenominator1, key: 2}]} function={(numerator1 / denominator1)} resultUnit={'inches'}/>
+            <Conversion header={"Decimal to Fraction"} conversionInputs={[{label: "0.", state: decimal1, setState: setDecimal1, key: 1}]} function={decimalToFraction()} resultUnit={'inches'}/>
             </ScrollView>
       </View>
     )
