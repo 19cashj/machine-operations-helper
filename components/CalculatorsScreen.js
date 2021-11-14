@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ConversionScreen } from './ConversionScreen';
 import { AngleScreen } from './AngleScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { FractionScreen } from './FractionScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,8 +20,9 @@ export function CalculatorsScreen({ navigation }) {
                   : 'code-working-outline';
               } else if (route.name === 'Angles') {
                 iconName = focused ? 'triangle' : 'triangle-outline';
+              } else if (route.name === 'Fractions') {
+                iconName = focused ? 'md-reorder-two-sharp' : 'md-reorder-two-outline';
               }
-    
               return <Ionicons name={iconName} size={size} color={color} />;
             },
             tabBarActiveTintColor: '#2d2d2d',
@@ -28,6 +30,7 @@ export function CalculatorsScreen({ navigation }) {
           })}>
           <Tab.Screen name="Conversions" component={ConversionScreen} options={{ headerShown: false }} />
           <Tab.Screen name="Angles" component={AngleScreen} options={{ headerShown: false }} />
+          <Tab.Screen name="Fractions" component={FractionScreen} options={{ headerShown: false }} />
         </Tab.Navigator>
       );
 }

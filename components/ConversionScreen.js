@@ -11,7 +11,7 @@ function ConversionInput(props) {
     return (
         <View style={styles.inputWrapper}>
             <Text style={styles.label}>{props.label}</Text>
-            <TextInput style={styles.input} keyboardType={'numeric'} value={props.state} onChangeText={(t) => {props.setState(parseInt(t) || 0)}}></TextInput>
+            <TextInput style={styles.input} keyboardType={'numeric'} value={String(props.state)} onChangeText={(t) => {props.setState(parseInt(t) || 0)}}></TextInput>
         </View>
     )
 }
