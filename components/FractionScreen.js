@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Pressable, ScrollView } from "react-native";
 import { Context } from '../Context'
-import { create, all, equal } from 'mathjs'
+import { create, all, equal, e } from 'mathjs'
 
 const config = { }
 const math = create(all, config)
@@ -38,15 +38,20 @@ function FractionButton(props) {
 
 function UtilityButton(props) {
     function pressFunction() {
-        function clear(prev) { {/* Bug with clear, cant input new operations */}
-            switch(props.type) {
-                case 'whole':
-                default:
-                    return {whole: undefined, numerator: prev.numerator, denominator: prev.denominator, operation: prev.operation};
-                case 'numerator':
-                    return {whole: prev.whole, numerator: undefined, denominator: prev.denominator, operation: prev.operation};
-                case 'denominator':
-                    return {whole: prev.whole, numerator: prev.numerator, denominator: undefined, operation: prev.operation};
+        function clear(prev) {
+            if (prev.operation !== undefined && prev.whole == undefined && props.prevInput.operation !== undefined) { {/* This check prevents the operation functions from being locked up if the input state had an existing operation */}
+                return {whole: undefined, numerator: undefined, denominator: undefined, operation: undefined};
+            }
+            else {
+                switch(props.type) {
+                    case 'whole':
+                    default:
+                        return {whole: undefined, numerator: prev.numerator, denominator: prev.denominator, operation: prev.operation};
+                    case 'numerator':
+                        return {whole: prev.whole, numerator: undefined, denominator: prev.denominator, operation: prev.operation};
+                    case 'denominator':
+                        return {whole: prev.whole, numerator: prev.numerator, denominator: undefined, operation: prev.operation};
+                }
             }
         }
         function back(prev) {
@@ -92,43 +97,63 @@ function UtilityButton(props) {
 }
 
 function OperationButton(props) {
-    function pressFunction() { {/* perform an equals function if an operation had already been inputted, put the result of the previous operation into previous input along with the new operation */}
-        function evaluate() {
-            const resultWhole = eval(`${props.prevInput.whole || 0} ${props.prevInput.operation || ''} ${props.input.whole}`);
-            if(props.label == '=') {
+    function pressFunction() {
+        function evaluate() { {/* perform an equals function if an operation had already been inputted, put the result of the previous operation into previous input along with the new operation */}
+            const resultWhole = eval(`${props.prevInput.whole || 0} ${props.prevInput.operation || ''} ${props.input.whole || 0}`);
+            if(props.label == '=') { {/* If the user inputted the equals operation */}
                 props.setInput(() => {
-                    return {whole: JSON.stringify(resultWhole), numerator: undefined, denominator: undefined, operation: undefined};
+                    return {whole: JSON.stringify(resultWhole) || 0, numerator: undefined, denominator: undefined, operation: undefined};
                 });
                 props.setPrevInput(() => {
                     return {whole: undefined, numerator: undefined, denominator: undefined, operation: undefined};
                 });
             }
-            else {
+            else { {/* If the user inputted another operation */}
                 props.setInput(() => {
-                    return {whole: undefined, numerator: undefined, denominator: undefined, operation: props.label};
+                    return {whole: undefined, numerator: undefined, denominator: undefined, operation: undefined};
                 });
                 props.setPrevInput(() => {
                     return {whole: JSON.stringify(resultWhole), numerator: undefined, denominator: undefined, operation: props.label};
                 });
             }
         }
-        if (props.input.operation || props.label == '=') {
-            if (props.prevInput.whole || props.prevInput.numerator || props.prevInput.denominator) {
-                evaluate()
+        if (props.label == 'AC') { { /* If the user inputted all clear, stop here and do nothing else */}
+            props.setInput(() => {
+                return {whole: undefined, numerator: undefined, denominator: undefined, operation: undefined};
+            });
+            props.setPrevInput(() => {
+                return {whole: undefined, numerator: undefined, denominator: undefined, operation: undefined};
+            });
+        }
+        else {
+            if (props.input.operation || props.label == '=') { {/* If there is an existing operation or the user inputted equals */}
+                if (props.input.operation && !props.prevInput.operation) { {/* Prevents an error if the current input has an operation attached to it */}
+                    props.setInput((prev) => {
+                        return {whole: 0, numerator: prev.numerator, denominator: prev.denominator, operation: undefined};
+                    });
+                    props.setPrevInput(() => {
+                        return {whole: props.input.whole || 0, numerator: props.input.denominator, denominator: props.input.denominator, operation: props.label}
+                    })
+                }
+                else {
+                    if (props.prevInput.whole || props.prevInput.numerator || props.prevInput.denominator) { { /* If there is a previous input to perform an operation on */}
+                        evaluate();
+                    }
+                    else { {/* Else do nothing */}
+                        props.setPrevInput(() => {
+                            return {whole: undefined, numerator: undefined, denominator: undefined, operation: undefined};
+                        });
+                    }
+                }
             }
             else {
                 props.setPrevInput(() => {
-                    return {whole: undefined, numerator: undefined, denominator: undefined, operation: undefined};
+                    return {whole: props.input.whole || 0, numerator: props.input.numerator, denominator: props.input.denominator, operation: props.label};
+                });
+                props.setInput(() => {
+                    return {whole: undefined, numerator: undefined, denominator: undefined, operation: props.label};
                 });
             }
-        }
-        else {
-            props.setPrevInput(() => {
-                return {whole: props.input.whole, numerator: props.input.numerator, denominator: props.input.denominator, operation: props.label};
-            });
-            props.setInput(() => {
-                return {whole: undefined, numerator: undefined, denominator: undefined, operation: props.label};
-            });
         }
     }
     return (
@@ -158,7 +183,6 @@ function SmallButton(props) {
 export function FractionScreen() {
     const [input, setInput] = useState({whole: undefined, numerator: undefined, denominator: undefined, operation: undefined})
     const [prevInput, setPrevInput] = useState({whole: undefined, numerator: undefined, denominator: undefined, operation: undefined})
-    const [result, setResult] = useState(0);
     const numPad = [0,7,8,9,4,5,6,1,2,3]
     return (
         <View style={styles.container}>
@@ -178,11 +202,12 @@ export function FractionScreen() {
                             return <WholeButton label={e} setInput={setInput} key={e} />
                         })}
                         <View style={styles.operations}>
-                            <OperationButton label={'+'} color={'green'} prevInput={prevInput} input={input} result={result} setResult={setResult} setInput={setInput} setPrevInput={setPrevInput} />
-                            <OperationButton label={'-'} color={'darkred'} prevInput={prevInput} input={input} result={result} setResult={setResult} setInput={setInput} setPrevInput={setPrevInput} />
-                            <OperationButton label={'*'} color={'darkblue'} prevInput={prevInput} input={input} result={result} setResult={setResult} setInput={setInput} setPrevInput={setPrevInput} />
-                            <OperationButton label={'/'} color={'orange'} prevInput={prevInput} input={input} result={result} setResult={setResult} setInput={setInput} setPrevInput={setPrevInput} />
-                            <OperationButton label={'='} color={'gray'} prevInput={prevInput} input={input} result={result} setResult={setResult} setInput={setInput} setPrevInput={setPrevInput} />
+                            <OperationButton label={'+'} color={'green'} prevInput={prevInput} input={input} setInput={setInput} setPrevInput={setPrevInput} />
+                            <OperationButton label={'-'} color={'darkred'} prevInput={prevInput} input={input} setInput={setInput} setPrevInput={setPrevInput} />
+                            <OperationButton label={'*'} color={'darkblue'} prevInput={prevInput} input={input} setInput={setInput} setPrevInput={setPrevInput} />
+                            <OperationButton label={'/'} color={'orange'} prevInput={prevInput} input={input} setInput={setInput} setPrevInput={setPrevInput} />
+                            <OperationButton label={'='} color={'gray'} prevInput={prevInput} input={input} setInput={setInput} setPrevInput={setPrevInput} />
+                            <OperationButton label={'AC'} color={'darkorange'} setInput={setInput} setPrevInput={setPrevInput} />
                         </View>
                     </View>
                     <View style={styles.fractionNumbers}>
@@ -276,7 +301,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 12,
-        paddingHorizontal: 20,
+        paddingHorizontal: 15,
         borderRadius: 4,
         elevation: 3,
         width: 50,
