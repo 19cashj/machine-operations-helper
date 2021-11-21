@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Pressable, ScrollView } from "react-native";
 import { Context } from '../Context'
-import { create, all, equal, e } from 'mathjs'
+import { create, all, equal, e, bignumber, fraction } from 'mathjs'
 
-const config = { }
+const config = {number: 'Fraction'}
 const math = create(all, config)
 
 function WholeButton(props) {
@@ -98,11 +98,26 @@ function UtilityButton(props) {
 
 function OperationButton(props) {
     function pressFunction() {
+        const allEqual = arr => arr.every(val => val === arr[0]); //allEqual snippet
         function evaluate() { {/* perform an equals function if an operation had already been inputted, put the result of the previous operation into previous input along with the new operation */}
-            const resultWhole = eval(`${props.prevInput.whole || 0} ${props.prevInput.operation || ''} ${props.input.whole || 0}`);
+            const prevInputFraction = `${parseInt((props.prevInput.numerator || 0)) + parseInt(props.prevInput.denominator ? ((props.prevInput.denominator * props.prevInput.whole) || 0) : props.prevInput.whole)}/${props.prevInput.denominator || 1}`;
+            const inputFraction = `${parseInt((props.input.numerator || 0)) + parseInt(props.input.denominator ? ((props.input.denominator * props.input.whole) || 0) : props.input.whole)}/${props.input.denominator || 1}`;
+            const result = eval(math.format(math.evaluate(`${prevInputFraction} ${props.prevInput.operation} ${inputFraction}`)))
+            const fractionToDecimal = () => { {/* Attempt to simplify repeating decimals like 1/3. It still has trouble with some fractions */}
+                const decimalConversion = (result % 1).toFixed(10).substring(2);
+                console.log(decimalConversion)
+                if (allEqual(decimalConversion.split('').splice(decimalConversion.length - 1))) {
+                    return (`(${decimalConversion[0]})`)
+                }
+                else {
+                    return decimalConversion;
+                }
+            }
+            const finalFraction = math.fraction(`0.${fractionToDecimal()}`);
+            const formattedResult = {whole: JSON.stringify((Math.floor(result) || undefined)), numerator: JSON.stringify(finalFraction.n) || undefined, denominator: JSON.stringify(finalFraction.d) || undefined}
             if(props.label == '=') { {/* If the user inputted the equals operation */}
                 props.setInput(() => {
-                    return {whole: JSON.stringify(resultWhole) || 0, numerator: undefined, denominator: undefined, operation: undefined};
+                    return {whole: formattedResult.whole, numerator: formattedResult.numerator, denominator: formattedResult.denominator, operation: undefined};
                 });
                 props.setPrevInput(() => {
                     return {whole: undefined, numerator: undefined, denominator: undefined, operation: undefined};
@@ -113,7 +128,7 @@ function OperationButton(props) {
                     return {whole: undefined, numerator: undefined, denominator: undefined, operation: undefined};
                 });
                 props.setPrevInput(() => {
-                    return {whole: JSON.stringify(resultWhole), numerator: undefined, denominator: undefined, operation: props.label};
+                    return {whole: formattedResult.whole, numerator: formattedResult.numerator, denominator: formattedResult.denominator, operation: undefined};
                 });
             }
         }
@@ -160,7 +175,6 @@ function OperationButton(props) {
         <SmallButton pressFunction={pressFunction} color={props.color} label={props.label} />
     )
 }
-
 function SmallButton(props) {
     return (
         <Pressable
@@ -206,8 +220,8 @@ export function FractionScreen() {
                             <OperationButton label={'-'} color={'darkred'} prevInput={prevInput} input={input} setInput={setInput} setPrevInput={setPrevInput} />
                             <OperationButton label={'*'} color={'darkblue'} prevInput={prevInput} input={input} setInput={setInput} setPrevInput={setPrevInput} />
                             <OperationButton label={'/'} color={'orange'} prevInput={prevInput} input={input} setInput={setInput} setPrevInput={setPrevInput} />
-                            <OperationButton label={'='} color={'gray'} prevInput={prevInput} input={input} setInput={setInput} setPrevInput={setPrevInput} />
                             <OperationButton label={'AC'} color={'darkorange'} setInput={setInput} setPrevInput={setPrevInput} />
+                            <OperationButton label={'='} color={'gray'} prevInput={prevInput} input={input} setInput={setInput} setPrevInput={setPrevInput} />
                         </View>
                     </View>
                     <View style={styles.fractionNumbers}>
@@ -238,11 +252,12 @@ const styles = StyleSheet.create({
     },
     calculator: {
         flex: 1,
-        width: '100%',
-        height: '100%',
+        width: 445,
+        height: '90%',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 15
+        padding: '5%',
+        paddingTop: '5%'
     },
     resultField: {
         backgroundColor: 'white',
@@ -265,7 +280,8 @@ const styles = StyleSheet.create({
     top: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+        paddingTop: '2%',
     },
     wholeNumbers: {
         flex: 1,
@@ -273,7 +289,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'center',
         width: '40%',
-        paddingTop: '10%'
+        paddingTop: '5%'
     },
     operations: {
         padding: '15%',
@@ -289,7 +305,6 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'center',
         width: '60%',
-        paddingTop: 10
     },
     fractionLine : {
         margin: '1%',
