@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         elevation: 3,
         width: 250,
         alignSelf: 'center',
-        margin: 20
+        margin: '10%'
     },
     buttonText: {
         fontSize: 16,

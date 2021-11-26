@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: '5%',
-        paddingTop: '5%'
+        paddingTop: '10%'
     },
     resultField: {
         backgroundColor: 'white',
@@ -265,7 +265,8 @@ const styles = StyleSheet.create({
         height: 75,
         borderRadius: 10,
         borderColor: 'black',
-        borderWidth: 1
+        borderWidth: 1,
+        marginBottom: 20
     },
     resultText: {
         fontSize: 40,
