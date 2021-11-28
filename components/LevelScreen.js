@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Animated } from 'react-native';
 import { Gyroscope } from 'expo-sensors';
 
 function round(n) {
@@ -13,12 +13,24 @@ function round(n) {
     const [data, setData] = useState({
       z: 0,
     });
-
     const [subscription, setSubscription] = useState(null);
 
     const _zero = () => {
       setData({z:0})
     }
+
+    const rotation = useRef(new Animated.Value(0)).current;
+    const rotationInter = rotation.interpolate({
+      inputRange: [-90, 90],
+      outputRange: ['-90deg', '90deg'],
+    });
+    useEffect(() => {
+      Animated.timing(rotation, {
+        duration: 1,
+        toValue: data.z,
+        useNativeDriver: true
+      }).start();
+    }, [data])
 
     const _subscribe = () => {
       setSubscription(
@@ -40,12 +52,11 @@ function round(n) {
       _subscribe();
       return () => _unsubscribe();
     }, []);
-  
-    const { z } = data;
+
     return (
       <View style={styles.container}>
         <Text style={styles.degrees}>
-          {round(z)}°
+          {round(data.z)}°
         </Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={subscription ? _unsubscribe : _subscribe} style={styles.button}>
@@ -54,6 +65,17 @@ function round(n) {
           <TouchableOpacity onPress={_zero} style={styles.button}>
             <Text>Zero</Text>
           </TouchableOpacity>
+        </View>
+        <View style={styles.trackerParent}>
+          <Animated.View style={{
+            top: '15%',
+            width: 10,
+            height: 50,
+            backgroundColor: 'red',
+            alignSelf: 'center',
+            borderRadius: 5,
+            transform: [{rotate: rotationInter}]
+          }}/>
         </View>
       </View>
     );
@@ -86,6 +108,14 @@ const styles = StyleSheet.create({
       borderLeftWidth: 1,
       borderRightWidth: 1,
       borderColor: '#ccc',
+    },
+    trackerParent: {
+      width: 80,
+      height: 80,
+      borderWidth: 5,
+      alignSelf: 'center',
+      borderRadius: 90,
+      top: 30
     },
   });
   
