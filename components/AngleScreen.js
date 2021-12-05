@@ -1,50 +1,64 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Image, Text, TextInput, Pressable } from "react-native";
+import { StyleSheet, View, Image, Text, TextInput, Pressable, Dimensions, Modal, Button } from "react-native";
 import { Context } from '../Context'
 import { create, all } from 'mathjs'
 
+const { width } = Dimensions.get("window");
 const config = { }
 const math = create(all, config)
 
-function RightAngle() {
+function SmallButton(props) {
     return (
-        <>
-            <Image style={styles.triangle} source={require('../assets/rightTriangle.png')} />
-        </>
-    )
-}
-
-function OtherAngle() {
-    return (
-        <>
-            <Image style={styles.triangle} source={require('../assets/otherTriangle.png')} />
-        </>
-    )
-}
-
-export function AngleScreen() {
-    const [toggleTriangle, setToggleTriangle] = useState(false);
-    return (
-      <View style={styles.container}>
-          <Pressable
-            onPress={() => {
-                setToggleTriangle((prev)=> {
-                    return !prev;
-                })
-            }}
+        <Pressable
+            onPress={props.pressFunction}
             style={({ pressed }) => [
                 {
                     backgroundColor: pressed
                     ? '#b8b8b8'
-                    : 'black'
+                    : props.color || 'black'
                 },
-                styles.changeButton
+                styles.smallButton
             ]}>
                 <Text
                     style={styles.buttonText}
-                >Change Triangle</Text>
+                >{props.label}</Text>
             </Pressable>
-          {toggleTriangle ? <RightAngle /> : <OtherAngle />}
+    )
+}
+
+export function AngleScreen() {
+    // This is to manage Modal State
+    const [isModalVisible, setModalVisible] = useState(false);
+  
+    // This is to manage TextInput State
+    const [inputValue, setInputValue] = useState("");
+  
+    // Create toggleModalVisibility function that will
+    // Open and close modal upon button clicks.
+    const toggleModalVisibility = () => {
+        setModalVisible(!isModalVisible);
+    };
+    return (
+      <View style={styles.container}>
+          <View style={styles.buttonContainer}>
+            <SmallButton style={styles.button} pressFunction={toggleModalVisibility}></SmallButton>
+          </View>
+          <Modal animationType="slide" 
+                   transparent visible={isModalVisible} 
+                   presentationStyle="overFullScreen" 
+                   onDismiss={toggleModalVisibility}>
+                <View style={styles.viewWrapper}>
+                    <View style={styles.modalView}>
+                        <TextInput placeholder="Enter something..." 
+                                   value={inputValue} style={styles.textInput} 
+                                   onChangeText={(value) => setInputValue(value)} />
+  
+                        {/** This button is responsible to close the modal */}
+                        <Button title="Close" onPress={toggleModalVisibility} />
+                    </View>
+                </View>
+            </Modal>
+          <Image style={styles.triangle} source={require('../assets/rightTriangle.png')} />
       </View>
     )
 }
@@ -55,19 +69,22 @@ const styles = StyleSheet.create({
         backgroundColor: '#c3c3c3',
         fontSize: 12,
         alignContent: 'center',
+        justifyContent: 'center'
     },
     triangle : {
         alignSelf: 'center',
-        marginTop: '5%'
     },
-    changeButton: {
+    buttonContainer : {
+        position: 'absolute'
+    },
+    smallButton: {
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 12,
         paddingHorizontal: 32,
         borderRadius: 4,
         elevation: 3,
-        width: 250,
+        width: 20,
         alignSelf: 'center',
         margin: '10%'
     },
@@ -77,5 +94,34 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         letterSpacing: 0.25,
         color: 'white'
-    }
+    },
+    viewWrapper: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.2)",
+    },
+    modalView: {
+        alignItems: "center",
+        justifyContent: "center",
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        elevation: 5,
+        transform: [{ translateX: -(width * 0.4) }, 
+                    { translateY: -90 }],
+        height: 180,
+        width: width * 0.8,
+        backgroundColor: "#fff",
+        borderRadius: 7,
+    },
+    textInput: {
+        width: "80%",
+        borderRadius: 5,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderColor: "rgba(0, 0, 0, 0.2)",
+        borderWidth: 1,
+        marginBottom: 8,
+    },
 })
