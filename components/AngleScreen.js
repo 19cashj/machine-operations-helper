@@ -41,7 +41,17 @@ export function AngleScreen() {
     return (
       <View style={styles.container}>
           <View style={styles.buttonContainer}>
-            <SmallButton style={styles.button} pressFunction={toggleModalVisibility}></SmallButton>
+            <View style={styles.buttonGroup1}>
+                <SmallButton style={styles.button} label={'Angle 1'} pressFunction={toggleModalVisibility}></SmallButton>
+            </View>
+            <View style={styles.buttonGroup2}>
+                <SmallButton style={styles.button} label={'Side 1'} pressFunction={toggleModalVisibility}></SmallButton>
+                <SmallButton style={styles.button} label={'Side 3'} pressFunction={toggleModalVisibility}></SmallButton>
+            </View>
+            <View style={styles.buttonGroup3}>
+                <SmallButton style={styles.button} label={'Side 2'} pressFunction={toggleModalVisibility}></SmallButton>
+                <SmallButton style={styles.button} label={'Angle 2'} pressFunction={toggleModalVisibility}></SmallButton>
+            </View>
           </View>
           <Modal animationType="slide" 
                    transparent visible={isModalVisible} 
@@ -75,16 +85,37 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     buttonContainer : {
-        position: 'absolute'
+        flex: 1,
+        position: 'absolute',
+        height: 740
+    },
+    buttonGroup1 : {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        width: 650,
+        top: 30
+    },
+    buttonGroup2: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: 340
+    },
+    buttonGroup3: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        width: 400
     },
     smallButton: {
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 12,
-        paddingHorizontal: 32,
+        paddingHorizontal: 10,
         borderRadius: 4,
         elevation: 3,
-        width: 20,
+        width: 100,
         alignSelf: 'center',
         margin: '10%'
     },
@@ -92,7 +123,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 21,
         fontWeight: 'bold',
-        letterSpacing: 0.25,
+        letterSpacing: 0,
         color: 'white'
     },
     viewWrapper: {
