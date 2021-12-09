@@ -6,10 +6,12 @@ import { create, all } from 'mathjs'
 const { width } = Dimensions.get("window");
 const config = { }
 const math = create(all, config)
+let modalButtonPressed = undefined
 
 function SmallButton(props) {
     return (
         <Pressable
+            onPressIn={() => {modalButtonPressed = props.modalButtonPressed}}
             onPress={props.pressFunction}
             style={({ pressed }) => [
                 {
@@ -30,27 +32,27 @@ export function AngleScreen() {
     // This is to manage Modal State
     const [isModalVisible, setModalVisible] = useState(false);
   
-    // This is to manage TextInput State
-    const [inputValue, setInputValue] = useState("");
+    const [values, setValues] = useState({a1: undefined, a2: undefined, s1: undefined, s2: undefined, s3: undefined});
   
     // Create toggleModalVisibility function that will
     // Open and close modal upon button clicks.
-    const toggleModalVisibility = () => {
+    const toggleModalVisibility = (buttonPressed) => {
         setModalVisible(!isModalVisible);
     };
+
     return (
       <View style={styles.container}>
           <View style={styles.buttonContainer}>
             <View style={styles.buttonGroup1}>
-                <SmallButton style={styles.button} label={'Angle 1'} pressFunction={toggleModalVisibility}></SmallButton>
+                <SmallButton label={values.a1 ? values.a1 + '°': 'Angle 1'} color={values.a1 ? '#616161' : 'black'} pressFunction={toggleModalVisibility} modalButtonPressed={'a1'}></SmallButton>
             </View>
             <View style={styles.buttonGroup2}>
-                <SmallButton style={styles.button} label={'Side 1'} pressFunction={toggleModalVisibility}></SmallButton>
-                <SmallButton style={styles.button} label={'Side 3'} pressFunction={toggleModalVisibility}></SmallButton>
+                <SmallButton label={values.s1 ? values.s1 : 'Side 1'} color={values.s1 ? '#616161' : 'black'} pressFunction={toggleModalVisibility} modalButtonPressed={'s1'}></SmallButton>
+                <SmallButton label={values.s3 ? values.s3 : 'Side 3'} color={values.s3 ? '#616161' : 'black'} pressFunction={toggleModalVisibility} modalButtonPressed={'s3'}></SmallButton>
             </View>
             <View style={styles.buttonGroup3}>
-                <SmallButton style={styles.button} label={'Side 2'} pressFunction={toggleModalVisibility}></SmallButton>
-                <SmallButton style={styles.button} label={'Angle 2'} pressFunction={toggleModalVisibility}></SmallButton>
+                <SmallButton label={values.s2 ? values.s2 : 'Side 2'} color={values.s2 ? '#616161' : 'black'} pressFunction={toggleModalVisibility} modalButtonPressed={'s2'}></SmallButton>
+                <SmallButton label={values.a2 ? values.a2 + '°': 'Angle 2'} color={values.a2 ? '#616161' : 'black'} pressFunction={toggleModalVisibility} modalButtonPressed={'a2'}></SmallButton>
             </View>
           </View>
           <Modal animationType="slide" 
@@ -59,9 +61,37 @@ export function AngleScreen() {
                    onDismiss={toggleModalVisibility}>
                 <View style={styles.viewWrapper}>
                     <View style={styles.modalView}>
-                        <TextInput placeholder="Enter something..." 
-                                   value={inputValue} style={styles.textInput} 
-                                   onChangeText={(value) => setInputValue(value)} />
+                        <TextInput keyboardType='numeric' placeholder="Enter your value..." 
+                                   value={JSON.stringify(() => {
+                                       switch(modalButtonPressed) {
+                                            case 'a1':
+                                               return values.a1
+                                            case 'a2':
+                                                return values.a2
+                                            case 's1':
+                                                return values.s1
+                                            case 's2':
+                                                return values.s2
+                                            case 's3':
+                                                return values.s3
+                                       }
+                                   })} style={styles.textInput} 
+                                   onChangeText={(value) => {
+                                        setValues((prev) => {
+                                            switch(modalButtonPressed) {
+                                                case 'a1':
+                                                    return {a1: value, a2: prev.a2, s1: prev.s1, s2: prev.s2, s3: prev.s3}
+                                                case 'a2':
+                                                    return {a1: prev.a1, a2: value, s1: prev.s1, s2: prev.s2, s3: prev.s3}
+                                                case 's1':
+                                                    return {a1: prev.a1, a2: prev.a2, s1: value, s2: prev.s2, s3: prev.s3}
+                                                case 's2':
+                                                    return {a1: prev.a1, a2: prev.a2, s1: prev.s1, s2: value, s3: prev.s3}
+                                                case 's3':
+                                                    return {a1: prev.a1, a2: prev.a2, s1: prev.s1, s2: prev.s2, s3: value}
+                                            }
+                                        })
+                                   }} />
   
                         {/** This button is responsible to close the modal */}
                         <Button title="Close" onPress={toggleModalVisibility} />
@@ -83,6 +113,7 @@ const styles = StyleSheet.create({
     },
     triangle : {
         alignSelf: 'center',
+        zIndex: 0
     },
     buttonContainer : {
         flex: 1,
@@ -94,13 +125,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         width: 650,
-        top: 30
     },
     buttonGroup2: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-around',
-        width: 340
+        width: 360
     },
     buttonGroup3: {
         flex: 1,
@@ -117,7 +147,8 @@ const styles = StyleSheet.create({
         elevation: 3,
         width: 100,
         alignSelf: 'center',
-        margin: '10%'
+        margin: '10%',
+        zIndex: 1
     },
     buttonText: {
         fontSize: 16,
