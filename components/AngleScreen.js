@@ -44,15 +44,16 @@ export function AngleScreen() {
       <View style={styles.container}>
           <View style={styles.buttonContainer}>
             <View style={styles.buttonGroup1}>
-                <SmallButton label={values.a1 ? values.a1 + '°': 'Angle 1'} color={values.a1 ? '#616161' : 'black'} pressFunction={toggleModalVisibility} modalButtonPressed={'a1'}></SmallButton>
+                <SmallButton label={values.a1 ? values.a1 + '°': 'Angle 1'} color={values.a1 ? 'gray' : 'black'} pressFunction={values.a1 ? null : toggleModalVisibility} modalButtonPressed={'a1'}></SmallButton>
+                <SmallButton label='Reset' color='red' pressFunction={() => {setValues({a1: undefined, a2: undefined,  s1: undefined,  s2: undefined, s3: undefined})}}/>
             </View>
             <View style={styles.buttonGroup2}>
-                <SmallButton label={values.s1 ? values.s1 : 'Side 1'} color={values.s1 ? '#616161' : 'black'} pressFunction={toggleModalVisibility} modalButtonPressed={'s1'}></SmallButton>
-                <SmallButton label={values.s3 ? values.s3 : 'Side 3'} color={values.s3 ? '#616161' : 'black'} pressFunction={toggleModalVisibility} modalButtonPressed={'s3'}></SmallButton>
+                <SmallButton label={values.s1 ? values.s1 : 'Side 1'} color={values.s1 ? 'gray' : 'black'} pressFunction={values.s1 ? null : toggleModalVisibility} modalButtonPressed={'s1'}></SmallButton>
+                <SmallButton label={values.s3 ? values.s3 : 'Side 3'} color={values.s3 ? 'gray' : 'black'} pressFunction={values.s3 ? null : toggleModalVisibility} modalButtonPressed={'s3'}></SmallButton>
             </View>
             <View style={styles.buttonGroup3}>
-                <SmallButton label={values.s2 ? values.s2 : 'Side 2'} color={values.s2 ? '#616161' : 'black'} pressFunction={toggleModalVisibility} modalButtonPressed={'s2'}></SmallButton>
-                <SmallButton label={values.a2 ? values.a2 + '°': 'Angle 2'} color={values.a2 ? '#616161' : 'black'} pressFunction={toggleModalVisibility} modalButtonPressed={'a2'}></SmallButton>
+                <SmallButton label={values.s2 ? values.s2 : 'Side 2'} color={values.s2 ? 'gray' : 'black'} pressFunction={values.s2 ? null : toggleModalVisibility} modalButtonPressed={'s2'}></SmallButton>
+                <SmallButton label={values.a2 ? values.a2 + '°': 'Angle 2'} color={values.a2 ? 'gray' : 'black'} pressFunction={values.a2 ? null : toggleModalVisibility} modalButtonPressed={'a2'}></SmallButton>
             </View>
           </View>
           <Modal animationType="slide" 
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        width: 650,
+        width: 550,
     },
     buttonGroup2: {
         flex: 1,
