@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, Image, Text, TextInput, Pressable, Dimensions, Modal, Button } from "react-native";
 import { Context } from '../Context'
 import { create, all } from 'mathjs'
@@ -11,7 +11,7 @@ let modalButtonPressed = undefined
 function SmallButton(props) {
     return (
         <Pressable
-            onPressIn={() => {modalButtonPressed = props.modalButtonPressed}}
+            onPressIn={() => modalButtonPressed = props.modalButtonPressed}
             onPress={props.pressFunction}
             style={({ pressed }) => [
                 {
@@ -31,12 +31,44 @@ function SmallButton(props) {
 export function AngleScreen() {
     // This is to manage Modal State
     const [isModalVisible, setModalVisible] = useState(false);
+
+    const [modalInput, setModalInput] = useState('');
   
     const [values, setValues] = useState({a1: undefined, a2: undefined, s1: undefined, s2: undefined, s3: undefined});
+
+    const inputHandle = () => {
+        const value = parseInt(modalInput);
+        setValues((prev) => {
+            switch(modalButtonPressed) {
+                case 'a1':
+                    return {a1: value, a2: prev.a2, s1: prev.s1, s2: prev.s2, s3: prev.s3}
+                case 'a2':
+                    return {a1: prev.a1, a2: value, s1: prev.s1, s2: prev.s2, s3: prev.s3}
+                case 's1':
+                    if(values.s2 && !values.a1 ) {
+                        return {a1: ((math.atan(values.s2/value))*57.2958).toFixed(1), a2: ((math.atan(value/values.s2))*57.2958).toFixed(1), s1: value, s2: prev.s2, s3: math.sqrt((value*value)+(prev.s2*prev.s2)).toFixed(2)}
+                    }
+                    else {
+                        return {a1: prev.a1, a2: prev.a2, s1: value, s2: prev.s2, s3: prev.s3}
+                    }
+                case 's2':
+                    if(values.s1 && !values.a1 ) {
+                        return {a1: ((math.atan(value/values.s1))*57.2958).toFixed(1), a2: ((math.atan(values.s1/value))*57.2958).toFixed(1), s1: prev.s1, s2: value, s3: math.sqrt((value*value)+(prev.s1*prev.s1)).toFixed(2)}
+                    }
+                    else {
+                        return {a1: prev.a1, a2: prev.a2, s1: prev.s1, s2: value, s3: prev.s3} 
+                    }
+                case 's3':
+                    return {a1: prev.a1, a2: prev.a2, s1: prev.s1, s2: prev.s2, s3: value}
+            }
+        })
+        toggleModalVisibility();
+        setModalInput('');
+    }
   
     // Create toggleModalVisibility function that will
     // Open and close modal upon button clicks.
-    const toggleModalVisibility = (buttonPressed) => {
+    const toggleModalVisibility = () => {
         setModalVisible(!isModalVisible);
     };
 
@@ -62,40 +94,8 @@ export function AngleScreen() {
                    onDismiss={toggleModalVisibility}>
                 <View style={styles.viewWrapper}>
                     <View style={styles.modalView}>
-                        <TextInput keyboardType='numeric' placeholder="Enter your value..." 
-                                   value={JSON.stringify(() => {
-                                       switch(modalButtonPressed) {
-                                            case 'a1':
-                                               return values.a1
-                                            case 'a2':
-                                                return values.a2
-                                            case 's1':
-                                                return values.s1
-                                            case 's2':
-                                                return values.s2
-                                            case 's3':
-                                                return values.s3
-                                       }
-                                   })} style={styles.textInput} 
-                                   onChangeText={(value) => {
-                                        setValues((prev) => {
-                                            switch(modalButtonPressed) {
-                                                case 'a1':
-                                                    return {a1: value, a2: prev.a2, s1: prev.s1, s2: prev.s2, s3: prev.s3}
-                                                case 'a2':
-                                                    return {a1: prev.a1, a2: value, s1: prev.s1, s2: prev.s2, s3: prev.s3}
-                                                case 's1':
-                                                    return {a1: prev.a1, a2: prev.a2, s1: value, s2: prev.s2, s3: prev.s3}
-                                                case 's2':
-                                                    return {a1: prev.a1, a2: prev.a2, s1: prev.s1, s2: value, s3: prev.s3}
-                                                case 's3':
-                                                    return {a1: prev.a1, a2: prev.a2, s1: prev.s1, s2: prev.s2, s3: value}
-                                            }
-                                        })
-                                   }} />
-  
-                        {/** This button is responsible to close the modal */}
-                        <Button title="Close" onPress={toggleModalVisibility} />
+                        <TextInput placeholder={`Enter value for ${modalButtonPressed}`} keyboardType='numeric' style={styles.textInput} value={modalInput} onChangeText={text => setModalInput(text)}/>
+                        <Button title="Enter" onPress={inputHandle} />
                     </View>
                 </View>
             </Modal>
