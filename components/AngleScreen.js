@@ -45,20 +45,32 @@ export function AngleScreen() {
                 case 'a2':
                     return {a1: prev.a1, a2: value, s1: prev.s1, s2: prev.s2, s3: prev.s3}
                 case 's1':
-                    if(values.s2 && !values.a1 ) {
+                    if(values.s2) {
                         return {a1: ((math.atan(values.s2/value))*57.2958).toFixed(1), a2: ((math.atan(value/values.s2))*57.2958).toFixed(1), s1: value, s2: prev.s2, s3: math.sqrt((value*value)+(prev.s2*prev.s2)).toFixed(2)}
+                    }
+                    if(values.s3) {
+                        return {a1: ((math.atan(values.s3/value))*57.2958).toFixed(1), a2: ((math.atan(value/values.s3))*57.2958).toFixed(1), s1: value, s2: math.sqrt((prev.s3*prev.s3)-(value*value)).toFixed(2), s3: prev.s3}
                     }
                     else {
                         return {a1: prev.a1, a2: prev.a2, s1: value, s2: prev.s2, s3: prev.s3}
                     }
                 case 's2':
-                    if(values.s1 && !values.a1 ) {
+                    if(values.s1) {
                         return {a1: ((math.atan(value/values.s1))*57.2958).toFixed(1), a2: ((math.atan(values.s1/value))*57.2958).toFixed(1), s1: prev.s1, s2: value, s3: math.sqrt((value*value)+(prev.s1*prev.s1)).toFixed(2)}
+                    }
+                    if(values.s3) {
+                        return {a1: ((math.asin(value/values.s3))*57.2958).toFixed(1), a2: ((math.acos(value/values.s3))*57.2958).toFixed(1), s1: math.sqrt((values.s3*values.s3)-(value*value)).toFixed(2), s2: value, s3: prev.s3}
                     }
                     else {
                         return {a1: prev.a1, a2: prev.a2, s1: prev.s1, s2: value, s3: prev.s3} 
                     }
                 case 's3':
+                    if(values.s1) {
+                        return {a1: ((math.atan(value/values.s1))*57.2958).toFixed(1), a2: ((math.atan(values.s1/value))*57.2958).toFixed(1), s1: prev.s1, s2: math.sqrt((value*value)-(prev.s1*prev.s1)).toFixed(2), s3: value}
+                    }
+                    if(values.s2) {
+                        return {a1: ((math.asin(values.s2/value))*57.2958).toFixed(1), a2: ((math.acos(values.s2/value))*57.2958).toFixed(1), s1: math.sqrt((value*value)-(values.s2*values.s2)).toFixed(2), s2: values.s2, s3: value}
+                    }
                     return {a1: prev.a1, a2: prev.a2, s1: prev.s1, s2: prev.s2, s3: value}
             }
         })
