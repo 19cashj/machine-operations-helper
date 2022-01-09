@@ -8,11 +8,13 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-picker/picker": "1.16.1",
     "@react-navigation/bottom-tabs": "^6.0.9",
     "@react-navigation/drawer": "^6.1.8",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",
     "expo": "~42.0.1",
+    "expo-sensors": "~10.2.2",
     "expo-status-bar": "~1.0.4",
     "mathjs": "^9.5.1",
     "react": "^17.0.2",
@@ -23,9 +25,8 @@
     "react-native-reanimated": "~2.2.0",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
-    "react-native-web": "~0.13.12",
-    "uuid": "^8.3.2",
-    "expo-sensors": "~10.2.2"
+    "react-native-web": "^0.17.5",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"

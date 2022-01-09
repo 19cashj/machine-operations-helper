@@ -52,7 +52,7 @@ export function ConversionScreen() {
     return (
       <View style={styles.container}>
           <ScrollView>
-            <Conversion header={"Feet to Inches"} conversionInputs={[{label: "Ft", state: feet1, setState: setFeet1, key: 1},{label: "In", state: inches1, setState: setInches1, key: 2}]} function={(feet1 * 12 + inches1)} resultUnit={'inches'}/>
+            <Conversion header={"Feet to Inches"} conversionInputs={[{label: "Ft", state: feet1, setState: setFeet1, key: 1},{label: "In", state: inches1, setState: setInches1, key: 2}]} function={(parseInt(feet1) * 12 + parseInt(inches1))} resultUnit={'inches'}/>
             <Conversion header={"Inches to Milimeters"} conversionInputs={[{label: "In", state: inches2, setState: setInches2, key: 1}]} function={(inches2 * 25.4)} resultUnit={'milimeters'}/>
             <Conversion header={"Milimeters to Inches"} conversionInputs={[{label: "Mm", state: milimeters1, setState: setMilimeters1, key: 1}]} function={(milimeters1 / 25.4)} resultUnit={'inches'}/>
             <Conversion header={"Fraction to Decimal"} conversionInputs={[{label: "Num", state: numerator1, setState: setNumerator1, key: 1},{label: "Den", state: denominator1, setState: setDenominator1, key: 2}]} function={(numerator1 / denominator1)} resultUnit={'inches'}/>

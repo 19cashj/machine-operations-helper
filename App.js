@@ -8,6 +8,7 @@ import { ConversionScreen } from './components/ConversionScreen';
 import { FractionScreen } from './components/FractionScreen';
 import { AngleScreen } from './components/AngleScreen';
 import LevelScreen from './components/LevelScreen';
+import WeightScreen from './components/WeightScreen'
 
 const Drawer = createDrawerNavigator();
 
@@ -22,6 +23,7 @@ export default function App() {
             <Drawer.Screen name="Angles" component={AngleScreen} options={{ title: 'Angles' }} />
             <Drawer.Screen name="Fractional Calculator" component={FractionScreen} options={{ title: 'Fractions' }} />
             <Drawer.Screen name="Gyroscope Level" component={LevelScreen} options={{ title: 'Level' }} />
+            <Drawer.Screen name="Weight of Steel Calculator" component={WeightScreen} options={{ title: 'Steel Weight' }} />
           </Drawer.Navigator>
             <StatusBar style="auto" />    
         </NavigationContainer>

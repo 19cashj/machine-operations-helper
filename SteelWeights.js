@@ -1,0 +1,5 @@
+const steelWeights =  [{dim: '3/16', weight: 7.65}, {dim: '1/4', weight: 10.2}, {dim: '5/16', weight: 12.8}, {dim: '3/8', weight: 15.3}, {dim: '7/16', weight: 17.9}, {dim: '1/2', weight: 20.4}, {dim: '9/16', weight: 22.9}, {dim: '5/8', weight: 25.5}, {dim: '11/16', weight: 28.1}, {dim: '3/4', weight: 30.6},
+{dim: '13/16', weight: 33.2}, {dim: '7/8', weight: 35.7}, {dim: '1', weight: 40.8}, {dim: '1 1/8', weight: 45.9}, {dim: '1 1/4', weight: 51.0}, {dim: '1 3/8', weight: 56.1}, {dim: '1 1/2', weight: 61.2}, {dim: '1 5/8', weight: 66.3}, {dim: '1 3/4', weight: 71.4}, {dim: '1 7/8', weight: 76.5}, {dim: '2', weight: 81.6}, {dim: '2 1/8', weight: 86.7},
+{dim: '2 1/4', weight: 91.8}, {dim: '2 1/2', weight: 102}, {dim: '2 3/4', weight: 112}, {dim: '3', weight: 122}, {dim: '3 1/4', weight: 133}, {dim: '3 1/2', weight: 143}, {dim: '3 3/4', weight: 153}, {dim: '4', weight: 163}]
+
+export default steelWeights

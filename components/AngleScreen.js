@@ -22,7 +22,7 @@ function SmallButton(props) {
                 styles.smallButton
             ]}>
                 <Text
-                    style={styles.buttonText}
+                    style={props.angle ? styles.angleText : styles.buttonText}
                 >{props.label}</Text>
             </Pressable>
     )
@@ -40,10 +40,6 @@ export function AngleScreen() {
         const value = parseInt(modalInput);
         setValues((prev) => {
             switch(modalButtonPressed) {
-                case 'a1':
-                    return {a1: value, a2: prev.a2, s1: prev.s1, s2: prev.s2, s3: prev.s3}
-                case 'a2':
-                    return {a1: prev.a1, a2: value, s1: prev.s1, s2: prev.s2, s3: prev.s3}
                 case 's1':
                     if(values.s2) {
                         return {a1: ((math.atan(values.s2/value))*57.2958).toFixed(1), a2: ((math.atan(value/values.s2))*57.2958).toFixed(1), s1: value, s2: prev.s2, s3: math.sqrt((value*value)+(prev.s2*prev.s2)).toFixed(2)}
@@ -51,9 +47,7 @@ export function AngleScreen() {
                     if(values.s3) {
                         return {a1: ((math.atan(values.s3/value))*57.2958).toFixed(1), a2: ((math.atan(value/values.s3))*57.2958).toFixed(1), s1: value, s2: math.sqrt((prev.s3*prev.s3)-(value*value)).toFixed(2), s3: prev.s3}
                     }
-                    else {
-                        return {a1: prev.a1, a2: prev.a2, s1: value, s2: prev.s2, s3: prev.s3}
-                    }
+                    return {a1: prev.a1, a2: prev.a2, s1: value, s2: prev.s2, s3: prev.s3}
                 case 's2':
                     if(values.s1) {
                         return {a1: ((math.atan(value/values.s1))*57.2958).toFixed(1), a2: ((math.atan(values.s1/value))*57.2958).toFixed(1), s1: prev.s1, s2: value, s3: math.sqrt((value*value)+(prev.s1*prev.s1)).toFixed(2)}
@@ -61,9 +55,7 @@ export function AngleScreen() {
                     if(values.s3) {
                         return {a1: ((math.asin(value/values.s3))*57.2958).toFixed(1), a2: ((math.acos(value/values.s3))*57.2958).toFixed(1), s1: math.sqrt((values.s3*values.s3)-(value*value)).toFixed(2), s2: value, s3: prev.s3}
                     }
-                    else {
-                        return {a1: prev.a1, a2: prev.a2, s1: prev.s1, s2: value, s3: prev.s3} 
-                    }
+                    return {a1: prev.a1, a2: prev.a2, s1: prev.s1, s2: value, s3: prev.s3} 
                 case 's3':
                     if(values.s1) {
                         return {a1: ((math.atan(value/values.s1))*57.2958).toFixed(1), a2: ((math.atan(values.s1/value))*57.2958).toFixed(1), s1: prev.s1, s2: math.sqrt((value*value)-(prev.s1*prev.s1)).toFixed(2), s3: value}
@@ -88,7 +80,7 @@ export function AngleScreen() {
       <View style={styles.container}>
           <View style={styles.buttonContainer}>
             <View style={styles.buttonGroup1}>
-                <SmallButton label={values.a1 ? values.a1 + '°': 'Angle 1'} color={values.a1 ? 'gray' : 'black'} pressFunction={values.a1 ? null : toggleModalVisibility} modalButtonPressed={'a1'}></SmallButton>
+                <SmallButton label={values.a1 ? values.a1 + '°': 'Angle 1'} color={'transparent'} pressFunction={null} angle={true}></SmallButton>
                 <SmallButton label='Reset' color='red' pressFunction={() => {setValues({a1: undefined, a2: undefined,  s1: undefined,  s2: undefined, s3: undefined})}}/>
             </View>
             <View style={styles.buttonGroup2}>
@@ -97,7 +89,7 @@ export function AngleScreen() {
             </View>
             <View style={styles.buttonGroup3}>
                 <SmallButton label={values.s2 ? values.s2 : 'Side 2'} color={values.s2 ? 'gray' : 'black'} pressFunction={values.s2 ? null : toggleModalVisibility} modalButtonPressed={'s2'}></SmallButton>
-                <SmallButton label={values.a2 ? values.a2 + '°': 'Angle 2'} color={values.a2 ? 'gray' : 'black'} pressFunction={values.a2 ? null : toggleModalVisibility} modalButtonPressed={'a2'}></SmallButton>
+                <SmallButton label={values.a2 ? values.a2 + '°': 'Angle 2'} color={'transparent'} pressFunction={null} angle={true}></SmallButton>
             </View>
           </View>
           <Modal animationType="slide" 
@@ -199,4 +191,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginBottom: 8,
     },
+    angleText: {
+        fontSize: 16,
+        lineHeight: 21,
+        fontWeight: 'bold',
+        letterSpacing: 0,
+        color: 'black'
+    }
 })
