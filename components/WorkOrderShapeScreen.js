@@ -1,26 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, CheckBox, TouchableOpacity, Image } from 'react-native';
 import SmallButton from './SmallButton';
+import ShapeImages from './ShapeImages';
 
 export default function WorkOrderShapeScreen({ route, navigation }) {
     const { selectionType, icon, shape } = route.params;
-    const images = {
-        shape: {
-            'Pipe/Tubing': require('../assets/pipeShape.png'),
-        },
-        icon: {
-            'Circle': require('../assets/LargeCircle.png'),
-            'Small Circle': require('../assets/SmallCircle.png'),
-            'Large Rectangle': require('../assets/BigRect.png'),
-            'Medium Rectangle': require('../assets/MediumRect.png'),
-            'Small Rectangle': require('../assets/SmallRect.png'),
-            'Pipe/Tubing': require('../assets/PipeIcon.png'),
-        }
-    };
-    const shapeSet = Object.values(images.shape)
-    const shapeText = Object.keys(images.shape)
-    const iconSet = Object.values(images.icon)
-    const iconText = Object.keys(images.icon)
+    const shapeSet = Object.values(ShapeImages.shape)
+    const shapeText = Object.keys(ShapeImages.shape)
+    const iconSet = Object.values(ShapeImages.icon)
+    const iconText = Object.keys(ShapeImages.icon)
     const [selected, setSelected] = useState(0)
     function SelectionSet() {
         if (selectionType == 'icon') {

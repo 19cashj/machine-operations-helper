@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, CheckBox, TouchableOpacity, Pressable, ScrollView, TextInput } from 'react-native';
 import SmallButton from './SmallButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Input(props) {
     return (
         <View style={styles.inputContainer}>
             <View style={styles.inputWrapper}>
                 <Text style={styles.label}>{props.label}</Text>
-                <TextInput style={styles.input} value={props.state} onChangeText={(t) => props.setState(t || '')}></TextInput>
+                <TextInput style={styles.input} value={props.state} onChangeText={(t) => props.setState(t || '')} onEndEditing={props.paramChange} />
             </View>
         </View>
     )
@@ -18,14 +19,14 @@ function BigInput(props) {
         <View style={styles.inputContainer}>
             <View style={styles.bigInputWrapper}>
                 <Text style={styles.bigLabel}>{props.label}</Text>
-                <TextInput multiline={true} numberOfLines={20} style={styles.bigInput} value={props.state} onChangeText={(t) => props.setState(t || '')}></TextInput>
+                <TextInput multiline={true} numberOfLines={20} style={styles.bigInput} value={props.state} onChangeText={(t) => props.setState(t || '')} onEndEditing={props.paramChange} />
             </View>
         </View>
     )
 }
 
 export default function WorkCreateScreen({ route, navigation }) {
-    const { icon, shape, quantity, material, length, width, identifier } = route.params;
+    const { icon, shape, quantity, material, length, width, identifier, instructions } = route.params;
     const [quantityInput, setQuantityInput] = useState('')
     const [materialInput, setMaterialInput] = useState('')
     const [lengthInput, setLengthInput] = useState('')
@@ -33,20 +34,37 @@ export default function WorkCreateScreen({ route, navigation }) {
     const [identifierInput, setIdentifierInput] = useState('')
     const [instructionInput, setInstructionInput] = useState('')
 
-    function create() {
-        navigation.navigate('WorkOrderList', { icon: icon, shape: shape, quantity: quantity, material: material, length: length, width: width, identifier: identifier })
+    async function setAsyncStore() {
+        let prevStorage;
+        await AsyncStorage.getItem('Orders').then((value) => {
+            prevStorage = JSON.parse(value)
+        })
+        try {    
+          await AsyncStorage.setItem('Orders', JSON.stringify([...prevStorage, { icon: icon, shape: shape, quantity: quantityInput, material: materialInput, length: lengthInput, width: widthInput, identifier: identifierInput, instructions: instructionInput }]))
+        }
+        catch(e) {
+          console.log(e); 
+        }
+      }
+
+    async function create() {
+        if (icon && shape && quantityInput != '' && materialInput != '' && lengthInput != '' && widthInput != '' && identifierInput != '' && instructionInput != '') {
+            await setAsyncStore();
+            navigation.navigate('WorkOrderList', { icon: icon, shape: shape, quantity: quantityInput, material: materialInput, length: lengthInput, width: widthInput, identifier: identifierInput, instructions: instructionInput })
+        }
     }
+
     return (
         <View style={styles.container}>
             <ScrollView>
                 <SmallButton label={icon ? icon :'Icon Selection'} pressFunction={() => navigation.navigate('WorkOrderShape', { selectionType: 'icon', shape: shape, icon: icon})}/>
                 <SmallButton label={shape ? shape : 'Shape Type Selection'} pressFunction={() => navigation.navigate('WorkOrderShape', { selectionType: 'shape', shape: shape, icon: icon})}/>
-                <Input state={quantityInput} setState={setQuantityInput} label={'Quantity'}/>
-                <Input state={materialInput} setState={setMaterialInput} label={'Material'}/>
-                <Input state={lengthInput} setState={setLengthInput} label={'Length'}/>
-                <Input state={widthInput} setState={setWidthInput} label={'Width'}/>
-                <Input state={identifierInput} setState={setIdentifierInput} label={'Identifier'}/>
-                <BigInput state={instructionInput} setState={setInstructionInput} label={'Instructions'}/>
+                <Input state={quantityInput} setState={setQuantityInput} paramChange={() => navigation.setParams({ quantity: quantityInput })} label={'Quantity'}/>
+                <Input state={materialInput} setState={setMaterialInput} paramChange={() => navigation.setParams({ material: materialInput })} label={'Material'}/>
+                <Input state={lengthInput} setState={setLengthInput} paramChange={() => navigation.setParams({ length: lengthInput })} label={'Length'}/>
+                <Input state={widthInput} setState={setWidthInput} paramChange={() => navigation.setParams({ width: widthInput })} label={'Width'}/>
+                <Input state={identifierInput} setState={setIdentifierInput} paramChange={() => navigation.setParams({ identifier: identifierInput })} label={'Identifier'}/>
+                <BigInput state={instructionInput} setState={setInstructionInput} paramChange={() => navigation.setParams({ instructions: instructionInput })} label={'Instructions'}/>
                 <SmallButton label={'Create'} pressFunction={create}/>
             </ScrollView>
         </View>

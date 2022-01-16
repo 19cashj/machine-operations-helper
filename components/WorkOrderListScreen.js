@@ -1,26 +1,18 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, Platform, TouchableOpacity, Keyboard, Touchable, ScrollView } from 'react-native';
 import WorkOrderListItem from './WorkOrderListItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useIsFocused } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function WorkOrderListScreen({ route, navigation }) {
-  const { icon, shape, quantity, material, length, width, identifier} = route.params;
-  const [task, setTask] = useState(null);
-  const [tasks, setTasks] = useState([]);
+  const { icon, shape, quantity, material, length, width, identifier, instructions } = route.params;
+  const [orders, setOrders] = useState([]);
+  const [newOrder, setNewOrder] = useState(false);
 
-  async function setAsyncStore(tasksArray) {
-    let storageObj = tasksArray.reduce(function(result, item, index, array) {
-      result[index] = item;
-      return result;
-    }, {})
+  async function setAsyncStore(ordersArray) {
     try {    
-      await AsyncStorage.setItem('Tasks', JSON.stringify(storageObj)).then(() => {
-       AsyncStorage.getItem('Tasks')
-        .then((value) => {
-          console.log(JSON.parse(value))
-        })
-      })
+      await AsyncStorage.setItem('Orders', JSON.stringify(ordersArray))
     }
     catch(e) {
       console.log(e); 
@@ -29,9 +21,9 @@ export default function WorkOrderListScreen({ route, navigation }) {
 
   const getAsyncStore = async () => {
     try {    
-      await AsyncStorage.getItem('Tasks')
+      await AsyncStorage.getItem('Orders')
       .then((value) => {
-        setTasks(Object.values(JSON.parse(value)))
+        setOrders(JSON.parse(value))
       })
     }
     catch(e) {
@@ -40,34 +32,28 @@ export default function WorkOrderListScreen({ route, navigation }) {
   }
 
   useEffect(() => {
-    setTask()
-    getAsyncStore()
-  }, [])
+    const load = navigation.addListener('focus', () => {
+      (async () => {
+        await getAsyncStore()
+      })()
+    });
+    return load;
+  }, [navigation]);
 
-  async function addTask() {
-    if (/([^\s])/.test(task)) {
-      let tasksCopy = [...tasks, task];
-      setTasks([...tasks, task]);
-      await setAsyncStore(tasksCopy);
-      setTask('');
-      Keyboard.dismiss();
-      inputRef.current.clear();
-    }
+  function deleteOrder(index) {
+    let ordersCopy = [...orders];
+    ordersCopy.splice(index, 1);
+    setOrders(ordersCopy);
+    setAsyncStore(ordersCopy);
   }
-  function deleteTask(index) {
-    let tasksCopy = [...tasks];
-    tasksCopy.splice(index, 1);
-    setTasks(tasksCopy);
-    setAsyncStore(tasksCopy);
-  }
+
   return (
       <View style={styles.container}>
           <View style={styles.tasksWrapper}>
-          <Text style={styles.header}>Work Orders</Text>
             <ScrollView style={styles.scrollLimiter}>
-              {tasks.map((taskText, index) => {
+              {orders.map((orderObject, index) => {
                 return ( 
-                  <WorkOrderListItem key={index} text={taskText} delete={deleteTask} index={index} press={() => navigation.navigate('WorkOrder', {itemId: Math.floor(Math.random() * 100)})}></WorkOrderListItem>
+                  <WorkOrderListItem key={index} icon={orderObject.icon} id={orderObject.identifier} delete={deleteOrder} index={index} press={() => navigation.navigate('WorkOrder', {icon: orderObject.icon, shape: orderObject.shape, quantity: orderObject.quantity, material: orderObject.material, length: orderObject.length, width: orderObject.width, identifier: orderObject.identifier, instructions: orderObject.instructions})}></WorkOrderListItem>
                 )
               })}
             </ScrollView>
@@ -90,13 +76,8 @@ const styles = StyleSheet.create({
     fontSize: 12
   },
   tasksWrapper: {
-    paddingTop: 80,
+    paddingTop: 30,
     paddingHorizontal: 20
-  },
-  header: {
-    fontWeight: 'bold',
-    fontSize: 24,
-    paddingBottom: 20
   },
   taskInputWrapper: {
     position: 'absolute',

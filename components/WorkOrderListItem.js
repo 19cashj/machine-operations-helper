@@ -1,14 +1,16 @@
 import React from "react";
-import { View, Text, StyleSheet, CheckBox, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, CheckBox, TouchableOpacity, Image } from 'react-native';
+import ShapeImages from "./ShapeImages";
 
-export default function Task(props) {
+export default function WorkOrderListItem(props) {
     function deleteTask() {
         props.delete(props.index)
     }
     return (
         <TouchableOpacity style={styles.task} onPress={props.press}>
             <View style={styles.left}>
-                <Text style={styles.taskText}>{props.text}</Text>
+                <Image source={ShapeImages.icon[props.icon]}/>
+                <Text style={styles.descText}>{props.id}</Text>
             </View>
             <View style={styles.right}>
                 <TouchableOpacity style={styles.xButton} onPress={deleteTask}>
@@ -32,7 +34,10 @@ const styles= StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: 'white'
     },
-    taskText: {
+    descText: {
+        marginLeft: 25,
+        fontSize: 18,
+        fontWeight: 'bold'
     },
     left: {
         alignItems: 'center',
