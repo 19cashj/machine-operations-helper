@@ -10,25 +10,16 @@ export default function WorkOrderListScreen({ route, navigation }) {
   const [orders, setOrders] = useState([]);
   const [newOrder, setNewOrder] = useState(false);
 
-  async function setAsyncStore(ordersArray) {
-    try {    
-      await AsyncStorage.setItem('Orders', JSON.stringify(ordersArray))
-    }
-    catch(e) {
-      console.log(e); 
-    }
+  async function setAsyncStore(ordersArray) {  
+    await AsyncStorage.setItem('Orders', JSON.stringify(ordersArray))
   }
 
-  const getAsyncStore = async () => {
-    try {    
-      await AsyncStorage.getItem('Orders')
-      .then((value) => {
-        setOrders(JSON.parse(value))
-      })
-    }
-    catch(e) {
-      console.log(e)
-    }
+  const getAsyncStore = async () => { 
+      const res = await AsyncStorage.getItem('Orders')
+      const parsed = JSON.parse(res);
+      if(Object.keys(parsed).length !== 0) {
+        setOrders(parsed)
+      }
   }
 
   useEffect(() => {

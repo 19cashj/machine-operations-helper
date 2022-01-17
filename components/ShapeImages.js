@@ -1,6 +1,7 @@
 const ShapeImages = {
     shape: {
         'Pipe/Tubing': require('../assets/pipeShape.png'),
+        'Medium Rectangle': require('../assets/MediumRectShape.png')
     },
     icon: {
         'Circle': require('../assets/LargeCircle.png'),
