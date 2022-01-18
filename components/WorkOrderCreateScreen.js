@@ -48,10 +48,8 @@ export default function WorkCreateScreen({ route, navigation }) {
     }
 
     async function create() {
-        if (icon && shape && identifierInput != '') {
-            await setAsyncStore();
-            navigation.navigate('WorkOrderList', { icon: icon, shape: shape, quantity: quantityInput, material: materialInput, length: lengthInput, width: widthInput, identifier: identifierInput, instructions: instructionInput })
-        }
+        await setAsyncStore();
+        navigation.navigate('WorkOrderList', { icon: icon, shape: shape, quantity: quantityInput, material: materialInput, length: lengthInput, width: widthInput, identifier: identifierInput, instructions: instructionInput })
     }
 
     return (
@@ -60,13 +58,13 @@ export default function WorkCreateScreen({ route, navigation }) {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Image style={styles.arrowStyle} source={require('../assets/ArrowLeft.png')}/>
                 </TouchableOpacity>
-                <SmallButton label={icon ? icon :'Icon Selection *'} pressFunction={() => navigation.navigate('WorkOrderShape', { selectionType: 'icon', shape: shape, icon: icon})}/>
-                <SmallButton label={shape ? shape : 'Shape Type Selection *'} pressFunction={() => navigation.navigate('WorkOrderShape', { selectionType: 'shape', shape: shape, icon: icon})}/>
+                <SmallButton label={icon ? icon :'Icon Selection'} pressFunction={() => navigation.navigate('WorkOrderShape', { selectionType: 'icon', shape: shape, icon: icon})}/>
+                <SmallButton label={shape ? shape : 'Shape Type Selection'} pressFunction={() => navigation.navigate('WorkOrderShape', { selectionType: 'shape', shape: shape, icon: icon})}/>
                 <Input state={quantityInput} setState={setQuantityInput} paramChange={() => navigation.setParams({ quantity: quantityInput })} label={'Quantity'}/>
                 <Input state={materialInput} setState={setMaterialInput} paramChange={() => navigation.setParams({ material: materialInput })} label={'Material'}/>
                 <Input state={lengthInput} setState={setLengthInput} paramChange={() => navigation.setParams({ length: lengthInput })} label={'Length'}/>
                 <Input state={widthInput} setState={setWidthInput} paramChange={() => navigation.setParams({ width: widthInput })} label={'Width'}/>
-                <Input state={identifierInput} setState={setIdentifierInput} paramChange={() => navigation.setParams({ identifier: identifierInput })} label={'Identifier *'}/>
+                <Input state={identifierInput} setState={setIdentifierInput} paramChange={() => navigation.setParams({ identifier: identifierInput })} label={'Identifier'}/>
                 <BigInput state={instructionInput} setState={setInstructionInput} paramChange={() => navigation.setParams({ instructions: instructionInput })} label={'Instructions'}/>
                 <SmallButton label={'Create'} pressFunction={create}/>
             </ScrollView>

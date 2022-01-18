@@ -30,7 +30,7 @@ export default function WorkOrderScreen({ route, navigation }) {
                     <Text style={styles.medText}>Material: {material}</Text>
                     <Text style={styles.medText}>Length: {length}</Text>
                     <Text style={styles.medText}>Width: {width}</Text>
-                    <Text style={styles.instructions}>Instructions: {width}</Text>
+                    <Text style={styles.instructions}>Instructions: {instructions}</Text>
                 </View>
             </ScrollView>
         </View>
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     instructions: {
-        padding: 20
+        padding: 30
     },
     topCard: {
         backgroundColor: 'white',

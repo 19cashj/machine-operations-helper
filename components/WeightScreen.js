@@ -22,6 +22,7 @@ export default function WeightScreen() {
     const [width, setWidth] = useState('');
     return (
       <View style={styles.container}>
+          <Text style={styles.result}>Length and Width should be Inches</Text>
           <View style={styles.subContainer}>
             <Input state={length} setState={setLength} label={'Length'} />
             <Input state={width} setState={setWidth} label={'Width'} />
