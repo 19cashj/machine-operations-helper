@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Button, Image, Text, TextInput } from "react-native";
 import { ScrollView } from 'react-native-gesture-handler';
-import { Context } from '../Context'
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from '@react-native-picker/picker';
 import steelWeights from '../SteelWeights';
 
 function Input(props) {

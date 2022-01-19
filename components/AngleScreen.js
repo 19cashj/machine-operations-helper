@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, Image, Text, TextInput, Pressable, Dimensions, Modal, Button } from "react-native";
-import { Context } from '../Context'
 import { create, all } from 'mathjs'
 
 const { width } = Dimensions.get("window");

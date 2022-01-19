@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, Button, Image, Text } from "react-native";
-import { Context } from '../Context'
 
 export function HomeScreen({ navigation }) {
     return (

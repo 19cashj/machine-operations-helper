@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Button, Image, Text, TextInput } from "react-native";
 import { ScrollView } from 'react-native-gesture-handler';
-import { Context } from '../Context'
 import { create, all } from 'mathjs'
 
 const config = { }

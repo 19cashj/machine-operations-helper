@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Pressable, ScrollView } from "react-native";
-import { Context } from '../Context'
 import { create, all, equal, e, bignumber, fraction } from 'mathjs'
 
 const config = {number: 'Fraction'}

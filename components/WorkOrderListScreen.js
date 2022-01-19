@@ -1,16 +1,13 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useContext } from 'react';
 import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, Platform, TouchableOpacity, Keyboard, Touchable, ScrollView } from 'react-native';
 import WorkOrderListItem from './WorkOrderListItem';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NavigationContainer, useIsFocused } from '@react-navigation/native';
-import { useFocusEffect } from '@react-navigation/native';
+import { WorkOrdersContext } from '../contexts/WorkOrdersContext.js';
 
 export default function WorkOrderListScreen({ route, navigation }) {
   const { icon, shape, quantity, material, length, width, identifier, instructions } = route.params;
-  const [orders, setOrders] = useState([]);
-  const [newOrder, setNewOrder] = useState(false);
+  const { orders, setOrders } = useContext(WorkOrdersContext);
 
-  async function setAsyncStore(ordersArray) {  
+  {/*async function setAsyncStore(ordersArray) {  
     await AsyncStorage.setItem('Orders', JSON.stringify(ordersArray))
   }
 
@@ -29,13 +26,12 @@ export default function WorkOrderListScreen({ route, navigation }) {
       })()
     });
     return load;
-  }, [navigation]);
+  }, [navigation]);*/}
 
   function deleteOrder(index) {
     let ordersCopy = [...orders];
     ordersCopy.splice(index, 1);
     setOrders(ordersCopy);
-    setAsyncStore(ordersCopy);
   }
 
   return (

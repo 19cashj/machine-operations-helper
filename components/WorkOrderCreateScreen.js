@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, CheckBox, TouchableOpacity, Pressable, ScrollView, TextInput, Image } from 'react-native';
 import SmallButton from './SmallButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { WorkOrdersContext } from '../contexts/WorkOrdersContext.js';
 
 function Input(props) {
     return (
@@ -34,7 +34,13 @@ export default function WorkCreateScreen({ route, navigation }) {
     const [identifierInput, setIdentifierInput] = useState('')
     const [instructionInput, setInstructionInput] = useState('')
 
-    async function setAsyncStore() {
+    const { orders, setOrders } = useContext(WorkOrdersContext);
+
+    function addOrder(order) {
+        setOrders([...orders, order]);
+    }
+
+    {/*async function setAsyncStore() {
         let prevStorage;
         await AsyncStorage.getItem('Orders').then((value) => {
             prevStorage = JSON.parse(value)
@@ -45,10 +51,10 @@ export default function WorkCreateScreen({ route, navigation }) {
         else {
             await AsyncStorage.setItem('Orders', JSON.stringify([{ icon: icon, shape: shape, quantity: quantityInput, material: materialInput, length: lengthInput, width: widthInput, identifier: identifierInput, instructions: instructionInput }]))
         }
-    }
+    }*/}
 
     async function create() {
-        await setAsyncStore();
+        addOrder({ icon: icon, shape: shape, quantity: quantityInput, material: materialInput, length: lengthInput, width: widthInput, identifier: identifierInput, instructions: instructionInput })
         navigation.navigate('WorkOrderList', { icon: icon, shape: shape, quantity: quantityInput, material: materialInput, length: lengthInput, width: widthInput, identifier: identifierInput, instructions: instructionInput })
     }
 
